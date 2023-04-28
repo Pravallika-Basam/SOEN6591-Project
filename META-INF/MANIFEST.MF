@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SOEN6591-Project
+Bundle-SymbolicName: SOEN6591-PROJECT;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.ui;bundle-version="3.115.0",
+ org.eclipse.ui.console;bundle-version="3.9.0",
+ org.eclipse.jdt.core;bundle-version="3.20.0",
+ org.eclipse.core.runtime;bundle-version="3.17.0",
+ org.eclipse.core.resources;bundle-version="3.13.600",
+ org.eclipse.jdt;bundle-version="3.18.200",
+ org.eclipse.jdt.launching;bundle-version="3.16.0",
+ org.eclipse.e4.core.commands;bundle-version="0.12.800"
+Automatic-Module-Name: soen6591-online
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: .,
+ opencsv-5.1.jar

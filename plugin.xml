@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="soen6591.commands.category"
+            name="Analysis Commands">
+      </category>
+      <command
+            categoryId="soen6591.commands.category"
+            name="Start Analysis"
+            id="soen6591.commands.startAnalysis">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="soen6591.handlers.AntiPatternDetectorHandler"
+            commandId="soen6591.commands.startAnalysis">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="soen6591.commands.startAnalysis"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="soen6591.menus.analysisMenu"
+               label="Analyse"
+               mnemonic="M">
+            <command
+                  commandId="soen6591.commands.startAnalysis"
+                  id="soen6591.menus.analysisCommand"
+                  mnemonic="S">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="soen6591.toolbars.analysisToolbar">
+            <command
+                  id="soen6591.toolbars.analysisCommand"
+                  commandId="soen6591.commands.startAnalysis"
+                  icon="icons/analysis.png"
+                  tooltip="Start Analysis">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+</plugin>
