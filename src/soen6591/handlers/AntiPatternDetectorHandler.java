@@ -15,6 +15,23 @@ public class AntiPatternDetectorHandler extends AbstractHandler {
 	private static MessageConsole myConsole;
 	private static MessageConsoleStream out;
 	
+	/*
+	 * The AntiPatternDetectorHandler class is responsible for handling user commands 
+	 * for detecting anti-patterns in code. It extends the AbstractHandler class and 
+	 * overrides its execute() method to execute the detection process. 
+	 * 
+	 * The execute() method retrieves the console where the detection process messages 
+	 * will be displayed, creates an instance of the AntiPatternDetector class, 
+	 * and calls its execute() method.
+	 * 
+	 * The findConsole() method is responsible for finding or creating the console 
+	 * where the detection process messages will be displayed.
+	 * 
+	 * The printMessage() method is used to print messages into the Debug view, 
+	 * not just in the console.
+	 */
+
+	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		AntiPatternDetectorHandler.myConsole = findConsole(CONSOLE_NAME);

@@ -19,188 +19,108 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 public class AntiPatternDetector extends AbstractHandler {
-
+	
+	/**
+	This method is called when the command "Start Analysis is
+	executed from the user interface, either by clicking the menu item.
+	@param event the execution event containing information about the current state of the application
+	@throws ExecutionException if an exception occurs during the execution of the command
+	@return the result of the command execution, or null if no result is available
+	*/
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		System.out.println("Inside AntiPatternDetector");
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-		IProject[] projects = root.getProjects();
+		IWorkspaceRoot workspaceRoot = workspace.getRoot();
+		IProject[] projects = workspaceRoot.getProjects();
 
-		Map<String, Integer> metricTrySizeLOC = new HashMap<String, Integer>();
-		Map<String, Integer> metricTryBlockCount = new HashMap<String, Integer>();
-		Map<String, Integer> metricTryBlockSLOC = new HashMap<String, Integer>();
-		Map<String, Integer> metricCatchBlockSLOC = new HashMap<String, Integer>();
+		Map<String, Integer> trySizeLOCMetric = new HashMap<>();
+		Map<String, Integer> tryBlockCountMetric = new HashMap<>();
+		Map<String, Integer> tryBlockSLOCMetric = new HashMap<>();
+		Map<String, Integer> catchBlockSLOCMetric = new HashMap<>();
 
-		Map<String, Integer> metricFlowHandlingActionsCount = new HashMap<String, Integer>();
-		Map<String, Integer> metricCatchBlockCount = new HashMap<String, Integer>();
-		Map<String, Integer> metricCatchBlockLOC = new HashMap<String, Integer>();
-		Map<String, Integer> metricCatchReturnNullCount = new HashMap<String, Integer>();
+		Map<String, Integer> flowHandlingActionsCountMetric = new HashMap<>();
+		Map<String, Integer> catchBlockCountMetric = new HashMap<>();
+		Map<String, Integer> catchBlockLOCMetric = new HashMap<>();
+		Map<String, Integer> catchReturnNullCountMetric = new HashMap<>();
 
-		Map<String, Integer> metricIncompleteImplementationCount = new HashMap<String, Integer>();
-		Map<String, Integer> metricInvokedMethodsCount = new HashMap<String, Integer>();
-		Map<String, Integer> metricCatchAndDoNothing = new HashMap<String, Integer>();
-		Map<String, Integer> metricDummyCatch = new HashMap<String, Integer>();
-		Map<String, Integer> metricLogAndThrow = new HashMap<String, Integer>();
-		Map<String, Integer> metricOverCatch = new HashMap<String, Integer>();
-		Map<String, Integer> metricThrowKitchenSink = new HashMap<String, Integer>();
-		Map<String, Integer> metricTryScope = new HashMap<String, Integer>();
-		Map<String, Integer> metricFlowTypePrevalance = new HashMap<String, Integer>();
-		Map<String, Integer> metricFlowQuantity = new HashMap<String, Integer>();
-		Map<String, Integer> metricExceptionHandlingStrategy = new HashMap<String, Integer>();
-		Map<String, Integer> metricFlowSourceDeclared = new HashMap<String, Integer>();
-		Map<String, Integer> metricCatchRecoverability = new HashMap<String, Integer>();
+		Map<String, Integer> incompleteImplementationCountMetric = new HashMap<>();
+		Map<String, Integer> invokedMethodsCountMetric = new HashMap<>();
+		Map<String, Integer> catchAndDoNothingMetric = new HashMap<>();
+		Map<String, Integer> dummyCatchMetric = new HashMap<>();
+		Map<String, Integer> logAndThrowMetric = new HashMap<>();
+		Map<String, Integer> overCatchMetric = new HashMap<>();
+		Map<String, Integer> throwKitchenSinkMetric = new HashMap<>();
+		Map<String, Integer> tryScopeMetric = new HashMap<>();
+		Map<String, Integer> flowTypePrevalenceMetric = new HashMap<>();
+		Map<String, Integer> flowQuantityMetric = new HashMap<>();
+		Map<String, Integer> exceptionHandlingStrategyMetric = new HashMap<>();
+		Map<String, Integer> flowSourceDeclaredMetric = new HashMap<>();
+		Map<String, Integer> catchRecoverabilityMetric = new HashMap<>();
 
 		for (IProject project : projects) {
-			System.out.println("DETECTING IN: " + project.getName());
 			ExceptionAndMetricFinder exceptionFinder = new ExceptionAndMetricFinder();
 
 			try {
-				// find the exceptions and print the methods that contain the exceptions
 				exceptionFinder.findExceptions(project);
-				metricTrySizeLOC = extractMetricTrySizeLOC(exceptionFinder);
-				metricTryBlockCount = extractMetricTryBlockCount(exceptionFinder);
-				metricTryBlockSLOC = extractMetricTryBlockSLOC(exceptionFinder);
-				metricCatchBlockSLOC = extractMetricCatchBlockSLOC(exceptionFinder);
-				metricFlowHandlingActionsCount = extractMetricFlowHandlingActionsCount(exceptionFinder);
-				metricCatchBlockCount = extractMetricCatchBlockCount(exceptionFinder);
-				metricCatchBlockLOC = extractMetricCatchBlockLOC(exceptionFinder);
-				metricCatchReturnNullCount = extractMetricCatchReturnNullCount(exceptionFinder);
-				metricIncompleteImplementationCount = extractMetricIncompleteImplementationCount(exceptionFinder);
-				metricCatchAndDoNothing = extractMetricCatchAndDoNothing(exceptionFinder);
-				metricDummyCatch = extractMetricDummyCatch(exceptionFinder);
-				metricLogAndThrow = extractMetricLogAndThrow(exceptionFinder);
-				metricInvokedMethodsCount = extractMetricInvokedMethodsCount(exceptionFinder);
-				metricOverCatch = extractMetricOverCatch(exceptionFinder);
-				metricThrowKitchenSink = extractMetricThrowKitchenSink(exceptionFinder);
-				metricTryScope = extractMetricTryScope(exceptionFinder);
-				metricFlowTypePrevalance = extractMetricFlowTypePrevalance(exceptionFinder);
-				metricFlowQuantity = extractMetricFlowQuantity(exceptionFinder);
-				metricExceptionHandlingStrategy = extractMetricExceptionHandlingStrategy(exceptionFinder);
-				metricFlowSourceDeclared = extractMetricFlowSourceDeclared(exceptionFinder);
-				metricCatchRecoverability = extractMetricCatchRecoverability(exceptionFinder);
-				exceptionFinder.printExceptions();
-
+				trySizeLOCMetric = extractTrySizeLOCMetric(exceptionFinder);
+				tryBlockCountMetric = extractTryBlockCountMetric(exceptionFinder);
+				tryBlockSLOCMetric = extractTryBlockSLOCMetric(exceptionFinder);
+				catchBlockSLOCMetric = extractCatchBlockSLOCMetric(exceptionFinder);
+				flowHandlingActionsCountMetric = extractFlowHandlingActionsCountMetric(exceptionFinder);
+				catchBlockCountMetric = extractCatchBlockCountMetric(exceptionFinder);
+				catchBlockLOCMetric = extractCatchBlockLOCMetric(exceptionFinder);
+				catchReturnNullCountMetric = extractCatchReturnNullCountMetric(exceptionFinder);
+				incompleteImplementationCountMetric = extractIncompleteImplementationCountMetric(exceptionFinder);
+				catchAndDoNothingMetric = extractCatchAndDoNothingMetric(exceptionFinder);
+				dummyCatchMetric = extractDummyCatchMetric(exceptionFinder);
+				logAndThrowMetric = extractLogAndThrowMetric(exceptionFinder);
+				invokedMethodsCountMetric = extractInvokedMethodsCountMetric(exceptionFinder);
+				overCatchMetric = extractOverCatchMetric(exceptionFinder);
+				throwKitchenSinkMetric = extractThrowKitchenSinkMetric(exceptionFinder);
+				tryScopeMetric = extractTryScopeMetric(exceptionFinder);
+				flowQuantityMetric = extractFlowQuantityMetric(exceptionFinder);
+				exceptionHandlingStrategyMetric = extractExceptionHandlingStrategyMetric(exceptionFinder);
+				flowSourceDeclaredMetric = extractFlowSourceDeclaredMetric(exceptionFinder);
+				catchRecoverabilityMetric = extractCatchRecoverabilityMetric(exceptionFinder);
 			} catch (JavaModelException | URISyntaxException e) {
 				e.printStackTrace();
 			}
-
 		}
 
-		System.out.println("metricTrySizeLOC sizeeeee:" + metricTrySizeLOC.size());
-		System.out.println("metricTryBlockCount sizeeeee:" + metricTryBlockCount.size());
-		System.out.println("Metric TrySLOC sizeeeee:" + metricTryBlockSLOC.size());
-		System.out.println("Metric CatchSLOC sizeeeee:" + metricCatchBlockSLOC.size());
+		/*
+		 * This section of the code is responsible for generating the CSV files for each of 
+		 * the extracted metrics. Each line calls the generateMetricsInCSV method with a metric 
+		 * name and its corresponding value, which creates a CSV file with the given name and 
+		 * writes the value to it.
+		 */
+		generateMetricsInCSV("TryLOC", trySizeLOCMetric);
+		generateMetricsInCSV("TryQuantity", tryBlockCountMetric);
+		generateMetricsInCSV("TrySLOC", tryBlockSLOCMetric);
+		generateMetricsInCSV("CatchSLOC", catchBlockSLOCMetric);
+		generateMetricsInCSV("FlowHandlingActions", flowHandlingActionsCountMetric);
+		generateMetricsInCSV("CatchQuantity", catchBlockCountMetric);
+		generateMetricsInCSV("CatchLOC", catchBlockLOCMetric);
+		generateMetricsInCSV("CatchAndReturnNull", catchReturnNullCountMetric);
+		generateMetricsInCSV("CatchAndDoNothing", catchAndDoNothingMetric);
+		generateMetricsInCSV("DummyCatch", dummyCatchMetric);
+		generateMetricsInCSV("LogAndThrow", logAndThrowMetric);
+		generateMetricsInCSV("OverCatch", overCatchMetric);
+		generateMetricsInCSV("ThrowKitchenSink", throwKitchenSinkMetric);
+		generateMetricsInCSV("TryScope", tryScopeMetric);
+		generateMetricsInCSV("FlowQuantity", flowQuantityMetric);
+		generateMetricsInCSV("ExceptionHandlingStrategy", exceptionHandlingStrategyMetric);
+		generateMetricsInCSV("FlowSourceDeclared", flowSourceDeclaredMetric);
+		generateMetricsInCSV("CatchRecoverability", catchRecoverabilityMetric);
 
-		generateMetricsInCSV("TrySizeLOC", metricTrySizeLOC);
-		generateMetricsInCSV("TryQuantity", metricTryBlockCount);
-		generateMetricsInCSV("TrySLOC", metricTryBlockSLOC);
-		generateMetricsInCSV("CatchSizeSLOC", metricCatchBlockSLOC);
-		generateMetricsInCSV("FlowHandlingActions", metricFlowHandlingActionsCount);
-		generateMetricsInCSV("CatchQuantity", metricCatchBlockCount);
-		generateMetricsInCSV("CatchSizeLOC", metricCatchBlockLOC);
-		generateMetricsInCSV("CatchAndReturnNull_AntiPattern", metricCatchReturnNullCount);
-		generateMetricsInCSV("CatchAndDoNothing_AntiPattern", metricCatchAndDoNothing);
-		generateMetricsInCSV("DummyCatch_AntiPattern", metricDummyCatch);
-		generateMetricsInCSV("LogAndThrow_AntiPattern", metricLogAndThrow);
-		generateMetricsInCSV("OverCatch_AntiPattern", metricOverCatch);
-		generateMetricsInCSV("ThrowKitchenSink_AntiPattern", metricThrowKitchenSink);
-		generateMetricsInCSV("TryScope", metricTryScope);
-		generateMetricsInCSV("FlowTypePrevalance", metricFlowTypePrevalance);
-		generateMetricsInCSV("FlowQuantity", metricFlowQuantity);
-		generateMetricsInCSV("ExceptionHandlingStrategy_AntiPattern", metricExceptionHandlingStrategy);
-		generateMetricsInCSV("FlowSourceDeclared", metricFlowSourceDeclared);
-		generateMetricsInCSV("CatchRecoverability_AntiPattern", metricCatchRecoverability);
-
-		System.out.println("DONE DETECTING!!");
-		AntiPatternDetectorHandler.printMessage("DONE DETECTING");
 		return null;
 	}
-
-	private Map<String, Integer> extractMetricOverCatch(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_OverCatch();
-	}
-
-	private Map<String, Integer> extractMetricCatchRecoverability(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_CatchRecoverability();
-	}
-
-	private Map<String, Integer> extractMetricFlowSourceDeclared(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_FlowSourceDeclared();
-	}
-
-	private Map<String, Integer> extractMetricExceptionHandlingStrategy(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_ExceptionHandlingStrategy();
-	}
-
-	private Map<String, Integer> extractMetricFlowQuantity(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_FlowQuantity();
-	}
-
-	private Map<String, Integer> extractMetricFlowTypePrevalance(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_FlowTypePrevalance();
-	}
-
-	private Map<String, Integer> extractMetricTryScope(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_TryScope();
-	}
-
-	private Map<String, Integer> extractMetricThrowKitchenSink(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_ThrowKitchenSink();
-	}
-
-	private Map<String, Integer> extractMetricInvokedMethodsCount(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_InvokedMethodsCount();
-	}
-
-	private Map<String, Integer> extractMetricLogAndThrow(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_LogAndThrow();
-	}
-
-	private Map<String, Integer> extractMetricDummyCatch(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_DummyCatch();
-	}
-
-	private Map<String, Integer> extractMetricCatchAndDoNothing(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_CatchAndDoNothing();
-	}
-
-	private Map<String, Integer> extractMetricIncompleteImplementationCount(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_IncompleteImplementationCount();
-	}
-
-	private Map<String, Integer> extractMetricCatchReturnNullCount(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_CatchReturnNullCount();
-	}
-
-	private Map<String, Integer> extractMetricCatchBlockLOC(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_CatchBlockLOC();
-	}
-
-	private Map<String, Integer> extractMetricCatchBlockCount(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_CatchBlockCount();
-	}
-
-	private Map<String, Integer> extractMetricFlowHandlingActionsCount(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_FlowHandlingActionsCount();
-	}
-
-	private Map<String, Integer> extractMetricCatchBlockSLOC(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_CatchBlockSLOC();
-	}
-
-	private Map<String, Integer> extractMetricTryBlockSLOC(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_TryBlockSLOC();
-	}
-
-	private Map<String, Integer> extractMetricTryBlockCount(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_TryBlockCount();
-	}
-
-	private Map<String, Integer> extractMetricTrySizeLOC(ExceptionAndMetricFinder exceptionFinder) {
-		return exceptionFinder.getProject_Metric_TrySizeLOC();
-	}
-
+	
+	/**
+	Generates a CSV file for a given set of metrics.
+	@param fileName the name of the CSV file to be created
+	@param value the map containing the metrics to be included in the CSV file
+	*/
+	
 	public static void generateMetricsInCSV(String fileName, Map<String, Integer> value) {
 
 		MetricCsvGenerator csvCreator = new MetricCsvGenerator();
@@ -211,8 +131,89 @@ public class AntiPatternDetector extends AbstractHandler {
 
 		} catch (URISyntaxException e) {
 
-			AntiPatternDetectorHandler.printMessage("Error while generating the Metric CSV "+e.getMessage());
+			AntiPatternDetectorHandler.printMessage("Error while generating the Metric CSV " + e.getMessage());
 		}
 
 	}
+		
+	private Map<String, Integer> extractTrySizeLOCMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_TrySizeLOC();
+	}
+
+	private Map<String, Integer> extractTryBlockCountMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_TryBlockCount();
+	}
+
+	private Map<String, Integer> extractTryBlockSLOCMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_TryBlockSLOC();
+	}
+
+	private Map<String, Integer> extractCatchBlockSLOCMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_CatchBlockSLOC();
+	}
+
+	private Map<String, Integer> extractFlowHandlingActionsCountMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_FlowHandlingActionsCount();
+	}
+
+	private Map<String, Integer> extractCatchBlockCountMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_CatchBlockCount();
+	}
+
+	private Map<String, Integer> extractCatchBlockLOCMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_CatchBlockLOC();
+	}
+
+	private Map<String, Integer> extractCatchReturnNullCountMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_CatchReturnNullCount();
+	}
+
+	private Map<String, Integer> extractIncompleteImplementationCountMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_IncompleteImplementationCount();
+	}
+
+	private Map<String, Integer> extractCatchAndDoNothingMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_CatchAndDoNothing();
+	}
+
+	private Map<String, Integer> extractDummyCatchMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_DummyCatch();
+	}
+
+	private Map<String, Integer> extractLogAndThrowMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_LogAndThrow();
+	}
+	
+	private Map<String, Integer> extractThrowKitchenSinkMetric(ExceptionAndMetricFinder exceptionFinder) {
+	    return exceptionFinder.getProject_Metric_ThrowKitchenSink();
+	}
+
+	private Map<String, Integer> extractInvokedMethodsCountMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_InvokedMethodsCount();
+	}
+
+	private Map<String, Integer> extractOverCatchMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_OverCatch();
+	}
+
+	private Map<String, Integer> extractCatchRecoverabilityMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_CatchRecoverability();
+	}
+
+	private Map<String, Integer> extractFlowSourceDeclaredMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_FlowSourceDeclared();
+	}
+
+	private Map<String, Integer> extractExceptionHandlingStrategyMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_ExceptionHandlingStrategy();
+	}
+
+	private Map<String, Integer> extractFlowQuantityMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_FlowQuantity();
+	}
+
+	private Map<String, Integer> extractTryScopeMetric(ExceptionAndMetricFinder exceptionFinder) {
+		return exceptionFinder.getProject_Metric_TryScope();
+	}
+
 }

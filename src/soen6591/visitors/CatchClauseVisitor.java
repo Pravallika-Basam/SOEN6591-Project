@@ -19,6 +19,29 @@ import org.eclipse.jdt.core.dom.TryStatement;
 import soen6591.handlers.AntiPatternDetectorHandler;
 
 public class CatchClauseVisitor extends ASTVisitor{
+	/*
+	 * This class represents an ASTVisitor for catching clauses.
+	 * 
+	 * It extends the ASTVisitor class and overrides the visit(CatchClause) method
+	 * to visit catch clauses and collect various metrics and patterns related to them.
+	 * 
+	 * The collected data includes:
+	 * 
+	 * Number of catch blocks in a method
+	 * Number of catch blocks that catch the same exception type
+	 * Catch blocks that contain a throw statement
+	 * Catch blocks that contain a log statement
+	 * Catch blocks that are empty
+	 * Catch blocks that contain only logging statements
+	 * Number of catch blocks that return null
+	 * List of statements in the catch block
+	 * List of flow handling actions in the catch block
+	 * 
+	 * The CatchClauseVisitor class also has several helper methods to check for
+	 * specific patterns and metrics in catch clauses, such as checking for empty
+	 * catch blocks, checking for catch blocks that contain only logging statements,
+	 * and checking for the presence of a specific exception type in a catch clause.
+	*/
 	private static HashSet<CatchClause> catchClauses = new HashSet<>();
 	private int catchBlockCount = 0;
 	private HashSet<CatchClause> throwStatements = new HashSet<>();
@@ -50,7 +73,6 @@ public class CatchClauseVisitor extends ASTVisitor{
 		}
 		
 		List<Statement> bodyStatements = node.getBody().statements();
-		//SampleHandler.printMessage("nodeeeee:" + node);
 		for (Statement st : bodyStatements) {
 			catchBlockLOCStatements.add(st.toString());
 			catchBlockLOC++;
@@ -81,7 +103,6 @@ public class CatchClauseVisitor extends ASTVisitor{
 		SingleVariableDeclaration exceptionType = node.getException();
 		ITypeBinding exceptionTypeBinding = exceptionType.getType().resolveBinding();
 		catchArguments = exceptionTypeBinding;
-		//SampleHandler.printMessage("catch::::::" + ThrowInCatchArgument);
 		
 		return super.visit(node);
 	}
