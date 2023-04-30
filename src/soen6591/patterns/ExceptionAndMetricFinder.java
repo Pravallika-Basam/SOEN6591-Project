@@ -157,17 +157,17 @@ public class ExceptionAndMetricFinder {
 				// Flow type prevalence
 				// Count the prevalence of different flow types (return, break, continue) in
 				// each method
-				FlowTypePrevelanceVisitor flowTypePrevalenceVisitor = new FlowTypePrevelanceVisitor();
-				parsedCompilationUnit.accept(flowTypePrevalenceVisitor);
-				getMethodsWithTargetTypePrevalance(flowTypePrevalenceVisitor);
-				// Calculate the average number of flow types per try block, avoiding division
-				// by zero errors
-				int averageNumber;
-				if (flowTypePrevalenceVisitor.getNumberOfTryBlocks() == 0)
-					averageNumber = 0;
-				else
-					averageNumber = flowTypePrevalenceVisitor.getNumberOfFlowTypePrevalance()
-							/ flowTypePrevalenceVisitor.getNumberOfTryBlocks();
+// 				FlowTypePrevelanceVisitor flowTypePrevalenceVisitor = new FlowTypePrevelanceVisitor();
+// 				parsedCompilationUnit.accept(flowTypePrevalenceVisitor);
+// 				getMethodsWithTargetTypePrevalance(flowTypePrevalenceVisitor);
+// 				// Calculate the average number of flow types per try block, avoiding division
+// 				// by zero errors
+// 				int averageNumber;
+// 				if (flowTypePrevalenceVisitor.getNumberOfTryBlocks() == 0)
+// 					averageNumber = 0;
+// 				else
+// 					averageNumber = flowTypePrevalenceVisitor.getNumberOfFlowTypePrevalance()
+// 							/ flowTypePrevalenceVisitor.getNumberOfTryBlocks();
 
 				// Calculate the total number of flow quantity (including flow type and flow
 				// quantity handlers)
@@ -182,8 +182,8 @@ public class ExceptionAndMetricFinder {
 
 				// Flow Source Declared methods
 				// Count the number of methods that declare flow sources (e.g., InputStream)
-				FlowSoucreDeclareMethods flowSourceDeclaredMethods = new FlowSoucreDeclareMethods();
-				parsedCompilationUnit.accept(flowSourceDeclaredMethods);
+				//FlowSoucreDeclareMethods flowSourceDeclaredMethods = new FlowSoucreDeclareMethods();
+				//parsedCompilationUnit.accept(flowSourceDeclaredMethods);
 
 				// Catch Recoverability - Characteristics metric
 				// Count the number of catch blocks that handle recoverable exceptions
@@ -191,7 +191,7 @@ public class ExceptionAndMetricFinder {
 				parsedCompilationUnit.accept(catchRecoverabilityVisitor);
 				catchRecoverabilityCount = catchRecoverabilityVisitor.getRecoverableExceptionCount();
 
-				extractMetrics(unit, numberOfTryScope, averageNumber, numberOfFlowQuantity, flowSourceDeclaredMethods);
+				extractMetrics(unit, numberOfTryScope, numberOfFlowQuantity);
 			}
 		}
 	}
@@ -368,12 +368,12 @@ public class ExceptionAndMetricFinder {
 		}
 	}
 
-	private void getMethodsWithTargetTypePrevalance(FlowTypePrevelanceVisitor numberOfTypePrevalance) {
-		// TODO Auto-generated method stub
-		for (TryStatement methodInvocationStatement : FlowTypePrevelanceVisitor.getTryStatements()) {
-			tryScope.put(findMethodForTryScope(methodInvocationStatement), "Flow Type Prevalance");
-		}
-	}
+// 	private void getMethodsWithTargetTypePrevalance(FlowTypePrevelanceVisitor numberOfTypePrevalance) {
+// 		// TODO Auto-generated method stub
+// 		for (TryStatement methodInvocationStatement : FlowTypePrevelanceVisitor.getTryStatements()) {
+// 			tryScope.put(findMethodForTryScope(methodInvocationStatement), "Flow Type Prevalance");
+// 		}
+// 	}
 
 	private void getMethodsWithTargetCatchClauses(CatchClauseVisitor catchClauseVisitor) {
 
