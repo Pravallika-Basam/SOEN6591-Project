@@ -19,14 +19,12 @@ import soen6591.visitors.CatchRecoverabilityVisitor;
 import soen6591.visitors.CommentVisitorTryAndCatch;
 import soen6591.visitors.ExceptionHandlingStrategyVisitor;
 import soen6591.visitors.FlowQuantityVisitor;
-import soen6591.visitors.FlowSoucreDeclareMethods;
-import soen6591.visitors.FlowTypePrevelanceVisitor;
 import soen6591.visitors.MethodInvocationVisitor;
 import soen6591.visitors.MethodInvokeVisitor;
 import soen6591.visitors.OverCatchVisitor;
 import soen6591.visitors.ReturnStatementVisitor;
-import soen6591.visitors.Throw1ClauseVisitor;
 import soen6591.visitors.TryScopeVisitor;
+import soen6591.visitors.ThrowClauseVisitor;
 import soen6591.visitors.TryVisitor;
 
 public class ExceptionAndMetricFinder {
@@ -72,10 +70,8 @@ public class ExceptionAndMetricFinder {
 	private static Map<String, Integer> metricOverCatch = new HashMap<String, Integer>();
 	private static Map<String, Integer> metricThrowKitchenSink = new HashMap<String, Integer>();
 	private static Map<String, Integer> metricTryScope = new HashMap<String, Integer>();
-	private static Map<String, Integer> metricFlowTypePrevalance = new HashMap<String, Integer>();
 	private static Map<String, Integer> metricFlowQuantity = new HashMap<String, Integer>();
 	private static Map<String, Integer> metricExceptionHandlingStrategy = new HashMap<String, Integer>();
-	private static Map<String, Integer> metricFlowSourceDeclared = new HashMap<String, Integer>();
 	private static Map<String, Integer> metricCatchRecoverability = new HashMap<String, Integer>();
 
 	// This method receives a project as a parameter, and its purpose is to find
@@ -110,9 +106,9 @@ public class ExceptionAndMetricFinder {
 				// information about them
 				getMethodsWithTargetTryClauses(overCatchVisitor);
 				// 3 : Kitchen Sink
-				Throw1ClauseVisitor throwUncheckedException1 = new Throw1ClauseVisitor();
+				ThrowClauseVisitor throwUncheckedException1 = new ThrowClauseVisitor();
 				parsedCompilationUnit.accept(throwUncheckedException1);
-				getMethodsWithTargetThrow1Clauses(throwUncheckedException1);
+				getMethodsWithTargetThrowClause(throwUncheckedException1);
 				// Calculate exception metrics related to try-catch blocks
 				// Get the count of try blocks and size of try blocks in LOC
 				TryVisitor tryVisitor = new TryVisitor();
@@ -154,25 +150,6 @@ public class ExceptionAndMetricFinder {
 				parsedCompilationUnit.accept(numberOfflowhandler);
 				getMethodsWithTargetFlowQuantity(numberOfflowhandler);
 
-				// Flow type prevalence
-				// Count the prevalence of different flow types (return, break, continue) in
-				// each method
-				FlowTypePrevelanceVisitor flowTypePrevalenceVisitor = new FlowTypePrevelanceVisitor();
-				parsedCompilationUnit.accept(flowTypePrevalenceVisitor);
-				getMethodsWithTargetTypePrevalance(flowTypePrevalenceVisitor);
-				// Calculate the average number of flow types per try block, avoiding division
-				// by zero errors
-				int averageNumber;
-				if (flowTypePrevalenceVisitor.getNumberOfTryBlocks() == 0)
-					averageNumber = 0;
-				else
-					averageNumber = flowTypePrevalenceVisitor.getNumberOfFlowTypePrevalance()
-							/ flowTypePrevalenceVisitor.getNumberOfTryBlocks();
-
-				// Calculate the total number of flow quantity (including flow type and flow
-				// quantity handlers)
-				int numberOfFlowQuantity = flowTypePrevalenceVisitor.getNumberOfFlowTypePrevalance()
-						+ numberOfflowhandler.getNumberOfFlowQuantity();
 
 				// Exception Handling Strategy - Characteristics metric
 				// Count the number of different exception handling strategies in each method
@@ -180,18 +157,6 @@ public class ExceptionAndMetricFinder {
 				parsedCompilationUnit.accept(exceptionHandlingStrategyVisitor);
 				exceptionHandlingStrategyCount = exceptionHandlingStrategyVisitor.ExceptionHandlingStrategyCount();
 
-				// Flow Source Declared methods
-				// Count the number of methods that declare flow sources (e.g., InputStream)
-				FlowSoucreDeclareMethods flowSourceDeclaredMethods = new FlowSoucreDeclareMethods();
-				parsedCompilationUnit.accept(flowSourceDeclaredMethods);
-
-				// Catch Recoverability - Characteristics metric
-				// Count the number of catch blocks that handle recoverable exceptions
-				CatchRecoverabilityVisitor catchRecoverabilityVisitor = new CatchRecoverabilityVisitor();
-				parsedCompilationUnit.accept(catchRecoverabilityVisitor);
-				catchRecoverabilityCount = catchRecoverabilityVisitor.getRecoverableExceptionCount();
-
-				extractMetrics(unit, numberOfTryScope, averageNumber, numberOfFlowQuantity, flowSourceDeclaredMethods);
 			}
 		}
 	}
@@ -220,15 +185,11 @@ public class ExceptionAndMetricFinder {
 	 * @param unit                      the compilation unit to extract metrics for
 	 * @param numberOfTryScope          visitor for counting the number of try
 	 *                                  scopes in the code
-	 * @param averageNumber             the average number of flow type prevalence
-	 *                                  in the code
 	 * @param numberOfFlowQuantity      the total number of flow quantities in the
 	 *                                  code
-	 * @param flowSourceDeclaredMethods visitor for counting the number of flow
-	 *                                  source declared methods in the code
 	 */
-	private void extractMetrics(ICompilationUnit unit, TryScopeVisitor numberOfTryScope, int averageNumber,
-			int numberOfFlowQuantity, FlowSoucreDeclareMethods flowSourceDeclaredMethods) {
+	private void extractMetrics(ICompilationUnit unit, TryScopeVisitor numberOfTryScope,
+			int numberOfFlowQuantity) {
 		// Store the extracted metrics for the given compilation unit in the various
 		// metric maps.
 		metricTrySizeLOC.put(unit.getElementName(), tryBlockLOC);
@@ -248,11 +209,9 @@ public class ExceptionAndMetricFinder {
 		metricLogAndThrow.put(unit.getElementName(), throwMethods.size());
 		metricOverCatch.put(unit.getElementName(), catchMethods.size());
 		metricThrowKitchenSink.put(unit.getElementName(), kitchenSinkMethods.size());
-		metricTryScope.put(unit.getElementName(), numberOfTryScope.getNumberOfTryScope());
-		metricFlowTypePrevalance.put(unit.getElementName(), averageNumber);
+		metricTryScope.put(unit.getElementName(), numberOfTryScope.getNumberOfTryScopes());
 		metricFlowQuantity.put(unit.getElementName(), numberOfFlowQuantity);
 		metricExceptionHandlingStrategy.put(unit.getElementName(), exceptionHandlingStrategyCount);
-		metricFlowSourceDeclared.put(unit.getElementName(), flowSourceDeclaredMethods.getNumberOfFlowSouceDeclared());
 		metricCatchRecoverability.put(unit.getElementName(), catchRecoverabilityCount);
 	}
 
@@ -268,16 +227,8 @@ public class ExceptionAndMetricFinder {
 		return metricThrowKitchenSink;
 	}
 
-	public static Map<String, Integer> getProject_Metric_FlowSourceDeclared() {
-		return metricFlowSourceDeclared;
-	}
-
 	public static Map<String, Integer> getProject_Metric_FlowQuantity() {
 		return metricFlowQuantity;
-	}
-
-	public static Map<String, Integer> getProject_Metric_FlowTypePrevalance() {
-		return metricFlowTypePrevalance;
 	}
 
 	public static Map<String, Integer> getProject_Metric_TryScope() {
@@ -340,9 +291,9 @@ public class ExceptionAndMetricFinder {
 		return metricCatchBlockSLOC;
 	}
 
-	private void getMethodsWithTargetThrow1Clauses(Throw1ClauseVisitor throwUncheckedException) {
+	private void getMethodsWithTargetThrowClause(ThrowClauseVisitor throwUncheckedException) {
 		// TODO Auto-generated method stub
-		for (MethodInvocation methodInvocationStatement : Throw1ClauseVisitor.getmethodInvocationStatements()) {
+		for (MethodInvocation methodInvocationStatement : ThrowClauseVisitor.getmethodInvocationStatements()) {
 			kitchenSinkMethods.put(findMethodForThrow1(methodInvocationStatement), "Throwing the Kitchen Sink");
 		}
 	}
@@ -363,15 +314,8 @@ public class ExceptionAndMetricFinder {
 
 	private void getMethodsWithTargetTryScope(TryScopeVisitor numberOfTryScope) {
 		// TODO Auto-generated method stub
-		for (TryStatement methodInvocationStatement : TryScopeVisitor.getTryStatements()) {
+		for (TryStatement methodInvocationStatement : TryScopeVisitor.getTryStmts()) {
 			tryScope.put(findMethodForTryScope(methodInvocationStatement), "Try Scope");
-		}
-	}
-
-	private void getMethodsWithTargetTypePrevalance(FlowTypePrevelanceVisitor numberOfTypePrevalance) {
-		// TODO Auto-generated method stub
-		for (TryStatement methodInvocationStatement : FlowTypePrevelanceVisitor.getTryStatements()) {
-			tryScope.put(findMethodForTryScope(methodInvocationStatement), "Flow Type Prevalance");
 		}
 	}
 
