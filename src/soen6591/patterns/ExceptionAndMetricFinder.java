@@ -19,8 +19,8 @@ import soen6591.visitors.CatchRecoverabilityVisitor;
 import soen6591.visitors.CommentVisitorTryAndCatch;
 import soen6591.visitors.ExceptionHandlingStrategyVisitor;
 import soen6591.visitors.FlowQuantityVisitor;
-import soen6591.visitors.FlowSoucreDeclareMethods;
-import soen6591.visitors.FlowTypePrevelanceVisitor;
+// import soen6591.visitors.FlowSoucreDeclareMethods;
+// import soen6591.visitors.FlowTypePrevelanceVisitor;
 import soen6591.visitors.MethodInvocationVisitor;
 import soen6591.visitors.MethodInvokeVisitor;
 import soen6591.visitors.OverCatchVisitor;
@@ -163,21 +163,21 @@ public class ExceptionAndMetricFinder {
 				
 				
 //				//Flow type prevalence 
-				System.out.println("-------- Flow Type Prevalence for each class ------------");
-				System.out.println("Class Name " + unit.getElementName());
-				FlowTypePrevelanceVisitor numberOfflowtypeprevalance = new FlowTypePrevelanceVisitor();
-				parsedCompilationUnit.accept(numberOfflowtypeprevalance);
-				getMethodsWithTargetTypePrevalance(numberOfflowtypeprevalance);
-				int averageNumber;
-				if (numberOfflowtypeprevalance.getNumberOfTryBlocks() ==0 )
-					averageNumber =0;
-				else
-					averageNumber = numberOfflowtypeprevalance.getNumberOfFlowTypePrevalance()/numberOfflowtypeprevalance.getNumberOfTryBlocks();
-				System.out.println("numberOfflowtypeprevalance.getNumberOfFlowTypePrevalance() " + numberOfflowtypeprevalance.getNumberOfFlowTypePrevalance());
-				System.out.println("numberOfflowtypeprevalance.getNumberOfTryBlocks() " + numberOfflowtypeprevalance.getNumberOfTryBlocks());
-				System.out.println("Number of flow type Prevalance " + averageNumber);
+				// System.out.println("-------- Flow Type Prevalence for each class ------------");
+				// System.out.println("Class Name " + unit.getElementName());
+				// FlowTypePrevelanceVisitor numberOfflowtypeprevalance = new FlowTypePrevelanceVisitor();
+				// parsedCompilationUnit.accept(numberOfflowtypeprevalance);
+				// getMethodsWithTargetTypePrevalance(numberOfflowtypeprevalance);
+				// int averageNumber;
+				// if (numberOfflowtypeprevalance.getNumberOfTryBlocks() ==0 )
+				// 	averageNumber =0;
+				// else
+				// 	averageNumber = numberOfflowtypeprevalance.getNumberOfFlowTypePrevalance()/numberOfflowtypeprevalance.getNumberOfTryBlocks();
+				// System.out.println("numberOfflowtypeprevalance.getNumberOfFlowTypePrevalance() " + numberOfflowtypeprevalance.getNumberOfFlowTypePrevalance());
+				// System.out.println("numberOfflowtypeprevalance.getNumberOfTryBlocks() " + numberOfflowtypeprevalance.getNumberOfTryBlocks());
+				// System.out.println("Number of flow type Prevalance " + averageNumber);
 				
-				int numberofFlowQuantity = numberOfflowhandler.getNumberOfFlowQuantity() + numberOfflowtypeprevalance.getNumberOfFlowTypePrevalance();
+				// int numberofFlowQuantity = numberOfflowhandler.getNumberOfFlowQuantity() + numberOfflowtypeprevalance.getNumberOfFlowTypePrevalance();
 			
 				// Exception Handling Strategy - Charactristics metric
 				ExceptionHandlingStrategyVisitor exceptionHandlingStrategyVisitor = new ExceptionHandlingStrategyVisitor();
@@ -185,11 +185,11 @@ public class ExceptionAndMetricFinder {
 				exceptionHandlingStrategyCount = exceptionHandlingStrategyVisitor.ExceptionHandlingStrategyCount();
 
 				// Flow Souce Declared methods
-				System.out.println("-------- Flow Souce Declared methods for each class ------------");
-				System.out.println("Class Name " + unit.getElementName());
-				FlowSoucreDeclareMethods numberOfflowSoucreDeclareMethods = new FlowSoucreDeclareMethods();
-				parsedCompilationUnit.accept(numberOfflowSoucreDeclareMethods);
-				System.out.println("Number of flow source Declared " + numberOfflowSoucreDeclareMethods.getNumberOfFlowSouceDeclared());
+				// System.out.println("-------- Flow Souce Declared methods for each class ------------");
+				// System.out.println("Class Name " + unit.getElementName());
+				// FlowSoucreDeclareMethods numberOfflowSoucreDeclareMethods = new FlowSoucreDeclareMethods();
+				// parsedCompilationUnit.accept(numberOfflowSoucreDeclareMethods);
+				// System.out.println("Number of flow source Declared " + numberOfflowSoucreDeclareMethods.getNumberOfFlowSouceDeclared());
 
 				
 //				// Catch Recoverability anti-pattern
@@ -218,10 +218,10 @@ public class ExceptionAndMetricFinder {
 	             metricOverCatch.put(unit.getElementName(), catchMethods.size());
 				metricThrowKitchenSink.put(unit.getElementName(), kitchenSinkMethods.size());
 				metricTryScope.put(unit.getElementName(), numberOfTryScope.getNumberOfTryScope());
-				metricFlowTypePrevalance.put(unit.getElementName(), averageNumber);
+		//		metricFlowTypePrevalance.put(unit.getElementName(), averageNumber);
 				metricFlowQuantity.put(unit.getElementName(), numberofFlowQuantity);
 				metricExceptionHandlingStrategy.put(unit.getElementName(), exceptionHandlingStrategyCount);
-			    metricFlowSourceDeclared.put(unit.getElementName(), numberOfflowSoucreDeclareMethods.getNumberOfFlowSouceDeclared());
+			//    metricFlowSourceDeclared.put(unit.getElementName(), numberOfflowSoucreDeclareMethods.getNumberOfFlowSouceDeclared());
 				metricCatchRecoverability.put(unit.getElementName(), catchRecoverabilityCount);
 			}
 		}
@@ -332,12 +332,12 @@ public class ExceptionAndMetricFinder {
 			tryScope.put(findMethodForTryScope(methodInvocationStatement), "Try Scope");
 		}
 	}
-	private void getMethodsWithTargetTypePrevalance(FlowTypePrevelanceVisitor numberOfTypePrevalance) {
-		// TODO Auto-generated method stub
-		for (TryStatement methodInvocationStatement : FlowTypePrevelanceVisitor.getTryStatements()) {
-			tryScope.put(findMethodForTryScope(methodInvocationStatement), "Flow Type Prevalance");
-		}
-	}
+	// private void getMethodsWithTargetTypePrevalance(FlowTypePrevelanceVisitor numberOfTypePrevalance) {
+	// 	// TODO Auto-generated method stub
+	// 	for (TryStatement methodInvocationStatement : FlowTypePrevelanceVisitor.getTryStatements()) {
+	// 		tryScope.put(findMethodForTryScope(methodInvocationStatement), "Flow Type Prevalance");
+	// 	}
+	// }
 
 	private void getMethodsWithTargetCatchClauses(CatchClauseVisitor catchClauseVisitor) {
 		
